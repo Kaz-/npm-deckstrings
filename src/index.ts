@@ -129,3 +129,23 @@ export function decode(deckstring: string): DeckDefinition {
 		format,
 	};
 }
+
+export function isValidDeckstring(deckstring: string): boolean {
+	const reader = new BufferReader(deckstring);
+
+	if (reader.nextByte() !== 0) {
+		return false;
+	}
+
+	const version = reader.nextVarint();
+	if (version !== DECKSTRING_VERSION) {
+		return false;
+	}
+
+	const format = reader.nextVarint();
+	if (format !== 1 && format !== 2) {
+		return false;
+	}
+
+	return true;
+}
